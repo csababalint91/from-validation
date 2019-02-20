@@ -1,13 +1,27 @@
 (function email() {
     let email = document.getElementById('email');
-    let theForm = document.getElementById('the-form');
-    let emailError = document.getElementById('error-email-message');
+    let theForm = document.getElementById('the-form');    
     
+    let validationProps = [
+        'valueMissing',
+        'typeMismatch'
+    ];
+
+    function getErrorMessage(element) {
+        for (let ii = 0; ii < validationProps.length; ii++ ) {
+            let prop = validationProps[ii];
+            if (element.validity[prop]) {
+                return element.getAttribute('data-error-' + prop);
+            }
+        }
+
+        return '';
+    }
 
     email.addEventListener('input',function(e) {
         //console.log(email.validity);
         let element = e.target;
-        let errorAtt = element.getAttribute('date-error-element');
+        let errorAtt = element.getAttribute('data-error-element');
 
         if(!errorAtt) {
             return;
@@ -20,7 +34,7 @@
             return;
         }
 
-        errorElement.innerHTML = 'Please enter a valid email address.';
+        errorElement.innerHTML = getErrorMessage(element);
 
         //submit the form
     });
