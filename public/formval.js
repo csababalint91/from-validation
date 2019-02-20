@@ -6,13 +6,21 @@
 
     email.addEventListener('input',function(e) {
         //console.log(email.validity);
+        let element = e.target;
+        let errorAtt = element.getAttribute('date-error-element');
 
-        if (email.validity.valid) {
-            emailError.innerHTML = '';
+        if(!errorAtt) {
             return;
         }
 
-        emailError.innerHTML = 'Please enter a valid email address.';
+        let errorElement = document.querySelector(errorAtt);
+
+        if (element.validity.valid) {
+            errorElement.innerHTML = '';
+            return;
+        }
+
+        errorElement.innerHTML = 'Please enter a valid email address.';
 
         //submit the form
     });
