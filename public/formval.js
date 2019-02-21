@@ -1,7 +1,6 @@
-(function email() {
-    let email = document.getElementById('email');
-    let theForm = document.getElementById('the-form');    
-    
+(function() {
+
+
     let validationProps = [
         'valueMissing',
         'typeMismatch'
@@ -10,6 +9,7 @@
     function getErrorMessage(element) {
         for (let ii = 0; ii < validationProps.length; ii++ ) {
             let prop = validationProps[ii];
+
             if (element.validity[prop]) {
                 return element.getAttribute('data-error-' + prop);
             }
@@ -18,34 +18,43 @@
         return '';
     }
 
-    email.addEventListener('input',function(e) {
-        //console.log(email.validity);
-        let element = e.target;
+    function validate(element) {
         let errorAtt = element.getAttribute('data-error-element');
+        let isValid = element.validity.valid;
 
-        if(!errorAtt) {
-            return;
+        if (!errorAtt) {
+            return isValid;
         }
 
         let errorElement = document.querySelector(errorAtt);
 
-        if (element.validity.valid) {
+        if (isValid) {
             errorElement.innerHTML = '';
-            return;
+            return true;
         }
 
         errorElement.innerHTML = getErrorMessage(element);
+    }    
 
-        //submit the form
+    let forms = document.querySelectorAll('form[data-formval]');
+
+    [].forEach.call(forms, function(form) {
+        form.addEventListener('submit', function(e) {
+
+            if ([].every.call(form.elements, validate)) {
+                return;
+            }
+    
+            e.preventDefault();
+        });
+
+        [].forEach.call(form.elements, function(element) {
+            element.addEventListener('input', function(e) {
+                validate(e.target);
+            });
+        });
     });
 
-    theForm.addEventListener('submit', function(e) {
-        if (email.validity.valid) {
-            return;
-        }
-
-        e.preventDefault();
-
-    })
     
+
 })();
